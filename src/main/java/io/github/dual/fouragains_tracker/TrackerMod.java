@@ -5,6 +5,9 @@ import java.util.function.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.quiltmc.loader.api.ModContainer;
+import org.quiltmc.qsl.base.api.entrypoint.ModInitializer;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -21,11 +24,16 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.TypeFilter;
 
-public class Utils {
+public class TrackerMod implements ModInitializer {
     // This logger is used to write text to the console and the log file.
     // It is considered best practice to use your mod id as the logger's name.
     // That way, it's clear which mod wrote info, warnings, and errors.
-    public static final Logger LOGGER = LoggerFactory.getLogger("player-tracker");
+    public static final Logger LOGGER = LoggerFactory.getLogger("fouragains_tracker");
+
+    @Override
+    public void onInitialize(ModContainer mod) {
+        LOGGER.info("Loaded {}!", mod.metadata().name());
+    }
 
     private static final TargetPredicate isValidTarget = TargetPredicate.createAttackable().ignoreVisibility();
 
@@ -67,7 +75,7 @@ public class Utils {
     }
 
     private static void setTrackerData(LivingEntity target, ItemStack tracker) {
-        tracker.setCustomName(Text.of("Player Tracker").copy().setStyle(Style.EMPTY.withColor(0xFFFF55)));
+        tracker.setCustomName(Text.of("Tracker").copy().setStyle(Style.EMPTY.withColor(0xFFFF55)));
 
         var nbt = tracker.getNbt();
         nbt.put(CompassItem.LODESTONE_POS_KEY, NbtHelper.fromBlockPos(target.getBlockPos()));
@@ -83,10 +91,10 @@ public class Utils {
         return closest;
     }
 
-    public static void giveTracker(PlayerEntity plr, LivingEntity target, ItemStack compass, ItemStack lapis) {
+    public static void giveTracker(PlayerEntity plr, LivingEntity target, ItemStack compass, ItemStack consumable) {
         // Decrement stacks accordingly.
         if (!plr.isCreative()) {
-            lapis.decrement(1);
+            consumable.decrement(1);
             if (compass.getCount() > 1) {
                 compass.decrement(1);
             }

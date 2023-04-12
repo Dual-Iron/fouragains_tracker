@@ -19,7 +19,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
-import io.github.dual.fouragains_tracker.Utils;
+import io.github.dual.fouragains_tracker.TrackerMod;
 
 @Mixin(CompassItem.class)
 public class CompassItemMixin {
@@ -34,13 +34,13 @@ public class CompassItemMixin {
 
 		// Get compass and lapis
 		ItemStack compass;
-		ItemStack lapis;
+		ItemStack consumable;
 
-		if (plr.getMainHandStack().isOf(Items.COMPASS) && plr.getOffHandStack().isOf(Items.LAPIS_LAZULI)) {
+		if (plr.getMainHandStack().isOf(Items.COMPASS) && plr.getOffHandStack().isOf(Items.DIAMOND)) {
 			compass = plr.getMainHandStack();
-			lapis = plr.getOffHandStack();
-		} else if (plr.getMainHandStack().isOf(Items.LAPIS_LAZULI) && plr.getOffHandStack().isOf(Items.COMPASS)) {
-			lapis = plr.getMainHandStack();
+			consumable = plr.getOffHandStack();
+		} else if (plr.getMainHandStack().isOf(Items.DIAMOND) && plr.getOffHandStack().isOf(Items.COMPASS)) {
+			consumable = plr.getMainHandStack();
 			compass = plr.getOffHandStack();
 		} else {
 			return;
@@ -49,7 +49,7 @@ public class CompassItemMixin {
 		wld.playSound(null, ctx.getBlockPos(), SoundEvents.ITEM_LODESTONE_COMPASS_LOCK, SoundCategory.PLAYERS, 1f, 1f);
 
 		if (wld instanceof ServerWorld swld) {
-			LivingEntity target = Utils.findTrackable(plr, swld);
+			LivingEntity target = TrackerMod.findTrackable(plr, swld);
 
 			if (target == null) {
 				plr.sendMessage(Text.of("No enemy vessels"), true);
@@ -63,7 +63,7 @@ public class CompassItemMixin {
 			wld.playSound(null, targetPos, SoundEvents.BLOCK_BELL_RESONATE, SoundCategory.PLAYERS, 1f, 1f);
 			wld.playSound(null, plrPos, SoundEvents.BLOCK_BEACON_POWER_SELECT, SoundCategory.PLAYERS, 1f, 1.25f);
 
-			Utils.giveTracker(plr, target, compass, lapis);
+			TrackerMod.giveTracker(plr, target, compass, consumable);
 		}
 
 		ci.setReturnValue(ActionResult.success(wld.isClient));

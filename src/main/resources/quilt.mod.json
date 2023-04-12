@@ -18,11 +18,13 @@
 			"license": "CC0-1.0"
 		},
 		"intermediate_mappings": "net.fabricmc:intermediary",
-		"entrypoints": {},
+		"entrypoints": {
+			"init": "io.github.dual.fouragains_tracker.TrackerMod"
+		},
 		"depends": [
 			{
 				"id": "quilt_loader",
-				"versions": ">=0.17.0-"
+				"versions": ">=0.18.0-"
 			},
 			{
 				"id": "minecraft",
